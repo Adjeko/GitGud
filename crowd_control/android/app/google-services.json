@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "489605382261",
+    "firebase_url": "https://crowdcontrol-9144c.firebaseio.com",
+    "project_id": "crowdcontrol-9144c",
+    "storage_bucket": "crowdcontrol-9144c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489605382261:android:fce23b2aa6228e74",
+        "android_client_info": {
+          "package_name": "com.example.crowdcontrol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "489605382261-iuqn1584beklmipogf79l2ujbavq9ds3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.crowdcontrol",
+            "certificate_hash": "d4160d8acb62e9ccafc6167750f4106a9d005259"
+          }
+        },
+        {
+          "client_id": "489605382261-rcuqvfb0p2ckmeamkds29s64jam6hbaq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBALppuS0yZMHDVTbMmMEjyKxvgpOmln0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "489605382261-rcuqvfb0p2ckmeamkds29s64jam6hbaq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
