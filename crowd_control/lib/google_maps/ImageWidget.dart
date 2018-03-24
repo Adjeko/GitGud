@@ -59,14 +59,23 @@ class Sky extends CustomPainter {
     MercatorProjection p = new MercatorProjection();
     List<G_LatLng> points = p.getCorners(new G_LatLng(40.749825, -73.987963), 13.0, 640.0, 640.0);
 
+    G_LatLng a1 = points.elementAt(0);
+    G_LatLng a2 = points.elementAt(1);
+
+    double xFactor = (a2.lng - -73.987963) / (a2.lng - a1.lng);
+    double yFactor = (a2.lat - 40.749825) / (a2.lat - a1.lat);
+
+    print('a is ${xFactor}, ${yFactor}, b is ${a2.lat}, ${a2.lng}');
+
+
     G_point a = p.fromLatLngToPoint(points.elementAt(0));
     G_point b = p.fromLatLngToPoint(points.elementAt(1));
 
-    print('a is ${a.x}, ${a.y}, b is ${b.x}, ${b.y}');
+    //print('a is ${a.x}, ${a.y}, b is ${b.x}, ${b.y}');
 
     canvas.drawLine(
-      new Offset(a.x - size.width/2, a.y - size.height/2), 
-      new Offset(b.x - size.width/2, b.y - size.height/2),
+      new Offset(size.width * xFactor, size.height * yFactor), 
+      new Offset(0.0, 0.0),
       new Paint()..color = Colors.red,
     );
   }
