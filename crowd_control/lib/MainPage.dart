@@ -46,6 +46,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
+    super.initState();
     // setState(() {
     //   _events.add(new EventInfo("Peter und Paul" , "Saufen", "https://www.unesco.de/uploads/tx_unescosearch/images/BRET5_c_Thomas_Rebel_01.jpg"));
     //   _events.add(new EventInfo("Gamescom", "ZOOOCKEN", "http://mediang.gameswelt.net/public/images/201608/cfad4a1c03e13194d4321f47e5971243.jpg"));

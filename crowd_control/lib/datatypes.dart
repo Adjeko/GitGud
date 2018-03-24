@@ -23,7 +23,7 @@ class EventInfo {
         )
       ),
       onPressed:(){
-        Navigator.push(context,new MaterialPageRoute(builder: (context) => new EventInfoPage(name)));
+        Navigator.push(context,new MaterialPageRoute(builder: (context) => new EventInfoPage(name: name)));
       }
     );
   }
