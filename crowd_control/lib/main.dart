@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
               controller: _listViewScrollController,
               itemCount: personList.length,
               itemBuilder: (buildContext, index) {
-                return new Text(personList[index].toString());
+                return personList[index].toWidget();
               },
             ),
             new Text(
