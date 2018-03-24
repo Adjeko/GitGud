@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'datatypes.dart';
 
 class MyApp extends StatelessWidget {
@@ -22,14 +23,35 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final List<EventInfo> _events = new List();
 
-@override
-  void initState() {
+  //Firebase
+  final mainReference = FirebaseDatabase.instance.reference();
+
+  _MainPageState() {
+    mainReference.child("eventinfo").onChildAdded.listen(_onEventInfoAdded);
+    mainReference.child("eventinfo").onChildChanged.listen(_onEventInfoEdited);
+  }
+
+  _onEventInfoAdded(Event event) {
     setState(() {
-      _events.add(new EventInfo("Peter und Paul" , "Saufen", "https://www.unesco.de/uploads/tx_unescosearch/images/BRET5_c_Thomas_Rebel_01.jpg"));
-      _events.add(new EventInfo("Gamescom", "ZOOOCKEN", "http://mediang.gameswelt.net/public/images/201608/cfad4a1c03e13194d4321f47e5971243.jpg"));
-      _events.add(new EventInfo("Open Codes Hackathon", "HACKEN", "https://www.cas.de/uploads/pics/Open_Codes_2018-thumbs.jpg"));
-      _events.add(new EventInfo("CES", "Consumer Electronics Show", "http://www.digitaldevotion.com/wp-content/uploads/2017/11/CES-2018.jpg"));
+      _events.add(new EventInfo.fromSnapshot(event.snapshot));
     });
+  }
+
+  _onEventInfoEdited(Event event) {
+    var old = _events.singleWhere((eventInfo) => eventInfo.key == event.snapshot.key);
+    setState(() {
+      _events[_events.indexOf(old)] = new EventInfo.fromSnapshot(event.snapshot);
+    });
+  }
+
+  @override
+  void initState() {
+    // setState(() {
+    //   _events.add(new EventInfo("Peter und Paul" , "Saufen", "https://www.unesco.de/uploads/tx_unescosearch/images/BRET5_c_Thomas_Rebel_01.jpg"));
+    //   _events.add(new EventInfo("Gamescom", "ZOOOCKEN", "http://mediang.gameswelt.net/public/images/201608/cfad4a1c03e13194d4321f47e5971243.jpg"));
+    //   _events.add(new EventInfo("Open Codes Hackathon", "HACKEN", "https://www.cas.de/uploads/pics/Open_Codes_2018-thumbs.jpg"));
+    //   _events.add(new EventInfo("CES", "Consumer Electronics Show", "http://www.digitaldevotion.com/wp-content/uploads/2017/11/CES-2018.jpg"));
+    // });
   }
   
   @override
@@ -48,7 +70,7 @@ class _MainPageState extends State<MainPage> {
         )
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: (){},
+        onPressed: (){ mainReference.child("eventinfo").push().set(_events[0].toJson()); },
         tooltip: 'Increment',
         child: new Icon(Icons.favorite_border),
       ),

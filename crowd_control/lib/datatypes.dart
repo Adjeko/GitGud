@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 import 'EventInfoPage.dart';
 
 class EventInfo {
+  String key;
   String name;
   String description;
   String imageUrl;
@@ -24,4 +27,18 @@ class EventInfo {
       }
     );
   }
+
+  EventInfo.fromSnapshot(DataSnapshot snapshot)
+  : key = snapshot.key,
+    name = snapshot.value["name"],
+    description = snapshot.value["description"],
+    imageUrl = snapshot.value["imageUrl"];
+
+  toJson(){
+    return {
+      "name" : name,
+      "description" : description,
+      "imageUrl" : imageUrl
+    };
+  } 
 }
