@@ -57,7 +57,7 @@ class Sky extends CustomPainter {
     );
 
     MercatorProjection p = new MercatorProjection();
-    List<G_LatLng> points = p.getCorners(new G_LatLng(40.749825, -73.987963), 13.0, 700.0, 700.0);
+    List<G_LatLng> points = p.getCorners(new G_LatLng(40.749825, -73.987963), 13.0, 640.0, 640.0);
 
     G_point a = p.fromLatLngToPoint(points.elementAt(0));
     G_point b = p.fromLatLngToPoint(points.elementAt(1));
@@ -95,7 +95,7 @@ class MercatorProjection {
   G_point fromLatLngToPoint(G_LatLng latlng) {
     G_point point = new G_point(0.0, 0.0);
     point.x = _pixelOrigin.x + latlng.lng * _pixelsPerLonDegree;
-    double siny = bounding(degreesToRadians(latlng.lat),-0.9999, 0.9999);
+    double siny = bounding(sin(degreesToRadians(latlng.lat)),-0.9999, 0.9999);
     point.y = _pixelOrigin.y + 0.5 * log((1+siny)/(1-siny)) * -_pixelsPerLonRadian;
     return point;
   }
@@ -134,13 +134,13 @@ class MercatorProjection {
   }
 
   double bounding(double value, double minN, double maxN) {
-    double value = 0.0;
+    double tmp;
     if (minN != null) {
-      value = min(value, minN);
+      tmp = max(value, minN);
     }
 
     if (maxN != null) {
-      value = max(value, maxN);
+      tmp = min(value, maxN);
     }
 
     return value;
