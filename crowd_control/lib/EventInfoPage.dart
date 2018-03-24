@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
-
 import 'package:location/location.dart';
+
+import 'MapsWidget.dart';
 
 class EventInfoPage extends StatefulWidget {
   EventInfoPage({Key key, this.name}) : super(key: key);
@@ -18,6 +19,8 @@ class _EventInfoPageState extends State<EventInfoPage> {
   Map<String, double> _currentLocation;
   StreamSubscription<Map<String, double>> _locationSubscription;
 
+  Map<String, G_LatLng> persons = new Map();
+
   @override
   initState() {
     super.initState();
@@ -25,6 +28,9 @@ class _EventInfoPageState extends State<EventInfoPage> {
     _locationSubscription = _loc.onLocationChanged.listen((Map<String, double> result){
       setState((){
         _currentLocation = result;
+        persons["ADjeko"] = new G_LatLng(40.730716, -73.990856);
+        persons["Edu"] = new G_LatLng(40.733609, -73.999611);
+        persons["Meier"] = new G_LatLng(40.722268, -73.997157);
       });
     }); 
   }
@@ -39,6 +45,7 @@ class _EventInfoPageState extends State<EventInfoPage> {
         child: new Column(
           children: <Widget>[
             new Text("Coordinates" + _currentLocation.toString()),
+            new MapsWidget(persons: persons),
             new RaisedButton(
               onPressed: () {
                 Navigator.pop(context);
