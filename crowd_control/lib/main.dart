@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Layout.dart';
 
 void main() => runApp(new MyApp());
 
@@ -26,15 +27,11 @@ class Events extends StatefulWidget {
 
 class EventsState extends State<Events> {
   final List<String> _events = new List();
-  final List<String> _sub = new List();
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('Fette Events Boi'),
-        actions: <Widget>[
-          new IconButton(icon: new Icon(Icons.list), onPressed: _push),
-        ],
       ),
       body: _buildEvents(),
     );
@@ -64,10 +61,9 @@ class EventsState extends State<Events> {
         Icons.favorite,
         color: Colors.red[500],
       ),
-      onTap: _push,
+      onTap: () {
+        Navigator.push(context,new MaterialPageRoute(builder: (context) => new EventInfoScreen(event)));
+      }
     );
-  }
-  void _push() {
-
   }
 }
