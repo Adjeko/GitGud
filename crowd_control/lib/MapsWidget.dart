@@ -1,43 +1,80 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:firebase_database/firebase_database.dart';
 
 class MapsWidget extends StatefulWidget {
-  MapsWidget({Key key, this.persons}) : super(key: key);
+  MapsWidget({Key key, this.name}) : super(key: key);
 
-  final Map<String,G_LatLng> persons; 
+  final String name;
 
   @override
-  _MapsState createState() => new _MapsState();
+  _MapsState createState() => new _MapsState(name);
 }
 
 class _MapsState extends State<MapsWidget> {
 
+  final mainReference = FirebaseDatabase.instance.reference();
+
+  Map<String, G_LatLng> _persons = new Map();
+
+  _MapsState(String name) {
+    mainReference.child("events/${name}").onChildAdded.listen(_onPersonAdded);
+    mainReference.child("events/${name}").onChildChanged.listen(_onPersonEdited);
+  }
+
   @override
-  initState()
-  {
+  initState() {
     super.initState();
+    // _persons["ADjeko"] = new G_LatLng(40.730716, -73.990856);
+    // _persons["Edu"] = new G_LatLng(40.733609, -73.999611);
+    // _persons["Meier"] = new G_LatLng(40.722268, -73.997157);
+  }
+
+  _onPersonAdded(Event event) {
+    if(event.snapshot.value["id"] != null && event.snapshot.value["lat"] != null && event.snapshot.value["lng"] != null){
+      setState(() {
+        _persons[event.snapshot.value["id"]] = new G_LatLng(event.snapshot.value["lat"], event.snapshot.value["lng"]);
+      });
+    }
+  }
+
+  _onPersonEdited(Event event) {
+    if(event.snapshot.value["id"] != null && event.snapshot.value["lat"] != null && event.snapshot.value["lng"] != null){
+      setState(() {
+        _persons[event.snapshot.value["id"]] = new G_LatLng(event.snapshot.value["lat"], event.snapshot.value["lng"]);
+      });
+    }
+    print(_persons.toString());
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Stack(
+    return new Column(
+      children: <Widget>[
+        new RaisedButton(
+          onPressed: () {
+            mainReference.child("events/${widget.name}").push().set({"id" : "adjeko", "lat" : 40.722268,"lng" : -73.997157}); 
+          },
+          child: new Text("new Person")
+        ),
+      new Stack(
       children: <Widget>[
         new Image.network(
                   'http://maps.google.com/maps/api/staticmap?center=40.749825,-73.987963&size=700x700&zoom=13&path=color:0xff0000ff|weight:5|40.737102,-73.990318|40.749825,-73.987963',
                   fit: BoxFit.contain,
         ),
-
         new Positioned(
-            
             bottom: 0.0,
             left: 0.0,
             right: 0.0,
             top: 0.0,
             child: new CustomPaint(
-              painter: new Sky(widget.persons),
+              painter: new Sky(_persons),
             )
         ),
       ],
+    )
+      ]
     );
   }
 }
@@ -56,7 +93,6 @@ class Sky extends CustomPainter {
     //   new Offset(size.width, size.height),
     //   new Paint()..color = Colors.red,
     // );
-
     MercatorProjection p = new MercatorProjection();
     List<G_LatLng> points = p.getCorners(new G_LatLng(40.749825, -73.987963), 13.0, 640.0, 640.0);
 
@@ -182,5 +218,10 @@ class G_LatLng  {
   G_LatLng(double lat, double lng) {
     this.lat = lat;
     this.lng = lng;
+  }
+  
+  toString()
+  {
+    return "(" + lat.toString() + "|" + lng.toString() + ")";
   }
 }
