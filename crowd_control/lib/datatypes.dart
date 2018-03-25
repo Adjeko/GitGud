@@ -104,7 +104,7 @@ class MapLegend {
 
   Widget toWidget() {
     return new ListTile(
-      leading: new Icon(Icons.event_seat, color: c),
+      leading: new Icon(Icons.face, color: c),
       title: new Text(name)
     );
   }

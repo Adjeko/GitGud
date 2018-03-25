@@ -75,7 +75,7 @@ class _MainPageState extends State<MainPage> {
           // mainReference.child("eventinfo").push().set(_events[0].toJson()); 
         },
         tooltip: 'Increment',
-        child: new Icon(Icons.favorite_border),
+        child: new Icon(Icons.add),
       ),
     );
   }
