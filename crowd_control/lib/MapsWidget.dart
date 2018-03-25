@@ -18,6 +18,7 @@ class _MapsState extends State<MapsWidget> {
   final mainReference = FirebaseDatabase.instance.reference();
 
   Map<String, G_LatLng> _persons = new Map();
+  List<MapLegend> _legends = new List();
 
   _MapsState(String name) {
     mainReference.child("events/${name}").onChildAdded.listen(_onPersonAdded);
@@ -30,12 +31,15 @@ class _MapsState extends State<MapsWidget> {
     // _persons["ADjeko"] = new G_LatLng(40.730716, -73.990856);
     // _persons["Edu"] = new G_LatLng(40.733609, -73.999611);
     // _persons["Meier"] = new G_LatLng(40.722268, -73.997157);
+    // _legends.add(new MapLegend("Herbert"));
+    // _legends.add(new MapLegend("Adjeko"));
   }
 
   _onPersonAdded(Event event) {
     if(event.snapshot.value["id"] != null && event.snapshot.value["lat"] != null && event.snapshot.value["lng"] != null){
       setState(() {
         _persons[event.snapshot.value["id"]] = new G_LatLng(event.snapshot.value["lat"], event.snapshot.value["lng"]);
+        _legends.add(new MapLegend(event.snapshot.value["id"]));
       });
     }
   }
@@ -46,37 +50,39 @@ class _MapsState extends State<MapsWidget> {
         _persons[event.snapshot.value["id"]] = new G_LatLng(event.snapshot.value["lat"], event.snapshot.value["lng"]);
       });
     }
-    print(_persons.toString());
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Column(
-      children: <Widget>[
-        new RaisedButton(
-          onPressed: () {
-            // mainReference.child("eventinfo/-L8OdkqVib682-FGXOe3/map").push().set(new EventMap("http://mediang.gameswelt.net/public/images/201608/cfad4a1c03e13194d4321f47e5971243.jpg", new G_LatLng(40.722268, -73.997157), 13, 640, 640).toJson()); 
-          },
-          child: new Text("new Person")
-        ),
-      new Stack(
-      children: <Widget>[
-        new Image.network(widget.map.url,
-                  // 'http://maps.google.com/maps/api/staticmap?center=40.749825,-73.987963&size=700x700&zoom=13&path=color:0xff0000ff|weight:5|40.737102,-73.990318|40.749825,-73.987963',
-                  fit: BoxFit.contain,
-        ),
-        new Positioned(
-            bottom: 0.0,
-            left: 0.0,
-            right: 0.0,
-            top: 0.0,
-            child: new CustomPaint(
-              painter: new Sky(_persons, widget.map),
+    return new Flexible(
+      child: new Column(
+        children: <Widget>[ 
+          new Stack(
+            children: <Widget>[
+              new Image.network(widget.map.url,
+                fit: BoxFit.contain,
+              ),
+              new Positioned(
+                bottom: 0.0,
+                left: 0.0,
+                right: 0.0,
+                top: 0.0,
+                child: new CustomPaint(
+                  painter: new Sky(_persons, widget.map, _legends),
+                )
+              ),
+            ],
+          ),
+          new Flexible(
+            child: new ListView.builder(
+              itemCount: _legends.length,
+              itemBuilder: (context, i) {
+                return _legends[i].toWidget();
+              }
             )
-        ),
-      ],
-    )
-      ]
+          )
+        ]
+      )
     );
   }
 }
@@ -85,8 +91,9 @@ class Sky extends CustomPainter {
 
   Map<String,G_LatLng> persons; 
   EventMap map;
+  List<MapLegend> legends;
 
-  Sky(this.persons, this.map);
+  Sky(this.persons, this.map, this.legends);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -103,13 +110,15 @@ class Sky extends CustomPainter {
     G_LatLng a1 = points.elementAt(0);
     G_LatLng a2 = points.elementAt(1);
 
+    int count = 0;
     persons.forEach((k,v) {
       double xFactor = (a2.lng - v.lng) / (a2.lng - a1.lng);
       double yFactor = (a2.lat - v.lat) / (a2.lat - a1.lat);
       yFactor = 1 - yFactor;
 
-        canvas.drawCircle(new Offset(size.width * xFactor, size.height * yFactor),
-          5.0, new Paint()..color = Colors.red);
+      canvas.drawCircle(new Offset(size.width * xFactor, size.height * yFactor),
+        5.0, new Paint()..color = legends[count].c);
+      count++;
     });
 
     

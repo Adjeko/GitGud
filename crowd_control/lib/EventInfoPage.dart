@@ -15,6 +15,8 @@ class EventInfoPage extends StatefulWidget {
 }
 
 class _EventInfoPageState extends State<EventInfoPage> {
+  final String MYNAME = "Adjeko";
+
   final String name;
   Location _loc = new Location();
   Map<String, double> _currentLocation;
@@ -45,6 +47,22 @@ class _EventInfoPageState extends State<EventInfoPage> {
       setState((){
         _currentLocation = result;
       });
+      mainReference.child("events/${widget.name}").once().then((DataSnapshot snapshot) {
+        if(snapshot.value != null){
+          bool hit = false;
+          snapshot.value.forEach((k, v) {
+            if(v["id"] != null && v["id"] == MYNAME && k != null && k != "null") {
+              mainReference.child("events/${widget.name}/${k}").set({"id" : MYNAME, "lat" : result["latitude"],"lng" : result["longitude"]});
+              hit = true;
+            }
+          });
+          if(!hit){
+            mainReference.child("events/${widget.name}").push().set({"id" : MYNAME, "lat" : result["latitude"],"lng" : result["longitude"]});
+          }
+        } else {
+          mainReference.child("events/${widget.name}").push().set({"id" : MYNAME, "lat" : result["latitude"],"lng" : result["longitude"]});
+        }
+      });      
     }); 
 
   }
@@ -64,14 +82,7 @@ class _EventInfoPageState extends State<EventInfoPage> {
       body: new Center(
         child: new Column(
           children: <Widget>[
-            new Text("Coordinates" + _currentLocation.toString()),
-            new MapsWidget(name: widget.name, map: map),
-            new RaisedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: new Text('Go back!'),
-            ),
+            new MapsWidget(name: widget.name, map: map)
           ]
         ),
       )
