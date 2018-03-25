@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-
+import 'dart:math';
 import 'EventInfoPage.dart';
 import 'MapsWidget.dart';
 
@@ -72,4 +72,27 @@ class EventMap {
     "height": mapHeight
     };
   }  
+}
+
+class MapLegend {
+  Color c;
+  String name;
+  
+  MapLegend(String name) {
+    this.name = name;
+    var rng = new Random();
+    c = new Color.fromARGB(255, rng.nextInt(255), rng.nextInt(255), rng.nextInt(255));
+  }  
+
+  Widget toWidget() {
+    return new ListTile(
+      leading: new Icon(Icons.event_seat, color: c),
+      title: new Text(name)
+    );
+  }
+
+  @override
+  String toString() {
+    return name;
+  }
 }

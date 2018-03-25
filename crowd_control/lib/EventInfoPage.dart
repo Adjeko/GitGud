@@ -82,14 +82,7 @@ class _EventInfoPageState extends State<EventInfoPage> {
       body: new Center(
         child: new Column(
           children: <Widget>[
-            new Text("Coordinates" + _currentLocation.toString()),
-            new MapsWidget(name: widget.name, map: map),
-            new RaisedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: new Text('Go back!'),
-            ),
+            new MapsWidget(name: widget.name, map: map)
           ]
         ),
       )
