@@ -68,7 +68,7 @@ class _MapsState extends State<MapsWidget> {
                 right: 0.0,
                 top: 0.0,
                 child: new CustomPaint(
-                  painter: new Sky(_persons, widget.map),
+                  painter: new Sky(_persons, widget.map, _legends),
                 )
               ),
             ],
@@ -91,8 +91,9 @@ class Sky extends CustomPainter {
 
   Map<String,G_LatLng> persons; 
   EventMap map;
+  List<MapLegend> legends;
 
-  Sky(this.persons, this.map);
+  Sky(this.persons, this.map, this.legends);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -109,13 +110,15 @@ class Sky extends CustomPainter {
     G_LatLng a1 = points.elementAt(0);
     G_LatLng a2 = points.elementAt(1);
 
+    int count = 0;
     persons.forEach((k,v) {
       double xFactor = (a2.lng - v.lng) / (a2.lng - a1.lng);
       double yFactor = (a2.lat - v.lat) / (a2.lat - a1.lat);
       yFactor = 1 - yFactor;
 
-        canvas.drawCircle(new Offset(size.width * xFactor, size.height * yFactor),
-          5.0, new Paint()..color = Colors.red);
+      canvas.drawCircle(new Offset(size.width * xFactor, size.height * yFactor),
+        5.0, new Paint()..color = legends[count].c);
+      count++;
     });
 
     
