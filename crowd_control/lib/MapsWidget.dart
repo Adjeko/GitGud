@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
+import 'datatypes.dart';
 
 class MapsWidget extends StatefulWidget {
-  MapsWidget({Key key, this.name}) : super(key: key);
+  MapsWidget({Key key, this.name, this.map}) : super(key: key);
 
   final String name;
+  final EventMap map;
 
   @override
   _MapsState createState() => new _MapsState(name);
@@ -53,14 +55,14 @@ class _MapsState extends State<MapsWidget> {
       children: <Widget>[
         new RaisedButton(
           onPressed: () {
-            mainReference.child("events/${widget.name}").push().set({"id" : "adjeko", "lat" : 40.722268,"lng" : -73.997157}); 
+            // mainReference.child("eventinfo/-L8OdkqVib682-FGXOe3/map").push().set(new EventMap("http://mediang.gameswelt.net/public/images/201608/cfad4a1c03e13194d4321f47e5971243.jpg", new G_LatLng(40.722268, -73.997157), 13, 640, 640).toJson()); 
           },
           child: new Text("new Person")
         ),
       new Stack(
       children: <Widget>[
-        new Image.network(
-                  'http://maps.google.com/maps/api/staticmap?center=40.749825,-73.987963&size=700x700&zoom=13&path=color:0xff0000ff|weight:5|40.737102,-73.990318|40.749825,-73.987963',
+        new Image.network(widget.map.url,
+                  // 'http://maps.google.com/maps/api/staticmap?center=40.749825,-73.987963&size=700x700&zoom=13&path=color:0xff0000ff|weight:5|40.737102,-73.990318|40.749825,-73.987963',
                   fit: BoxFit.contain,
         ),
         new Positioned(
@@ -69,7 +71,7 @@ class _MapsState extends State<MapsWidget> {
             right: 0.0,
             top: 0.0,
             child: new CustomPaint(
-              painter: new Sky(_persons),
+              painter: new Sky(_persons, widget.map),
             )
         ),
       ],
@@ -82,8 +84,9 @@ class _MapsState extends State<MapsWidget> {
 class Sky extends CustomPainter {
 
   Map<String,G_LatLng> persons; 
+  EventMap map;
 
-  Sky(this.persons);
+  Sky(this.persons, this.map);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -94,7 +97,8 @@ class Sky extends CustomPainter {
     //   new Paint()..color = Colors.red,
     // );
     MercatorProjection p = new MercatorProjection();
-    List<G_LatLng> points = p.getCorners(new G_LatLng(40.749825, -73.987963), 13.0, 640.0, 640.0);
+    // List<G_LatLng> points = p.getCorners(new G_LatLng(40.749825, -73.987963), 13.0, 640.0, 640.0);
+    List<G_LatLng> points = p.getCorners(map.center, map.zoomLevel.toDouble(), map.mapHeight.toDouble(), map.mapWidth.toDouble());
 
     G_LatLng a1 = points.elementAt(0);
     G_LatLng a2 = points.elementAt(1);

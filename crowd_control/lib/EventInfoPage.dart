@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:location/location.dart';
-
+import 'package:firebase_database/firebase_database.dart';
 import 'MapsWidget.dart';
+import 'datatypes.dart';
 
 class EventInfoPage extends StatefulWidget {
   EventInfoPage({Key key, this.name}) : super(key: key);
 
   final String name;
   @override
-  _EventInfoPageState createState() => new _EventInfoPageState();
+  _EventInfoPageState createState() => new _EventInfoPageState(name);
 }
 
 class _EventInfoPageState extends State<EventInfoPage> {
@@ -18,6 +19,23 @@ class _EventInfoPageState extends State<EventInfoPage> {
   Location _loc = new Location();
   Map<String, double> _currentLocation;
   StreamSubscription<Map<String, double>> _locationSubscription;
+  EventMap map;
+  final mainReference = FirebaseDatabase.instance.reference();
+
+  _EventInfoPageState(String name) {
+    mainReference.child("eventinfo").once().then((DataSnapshot snapshot){
+      snapshot.value.keys.forEach((k){
+        if(snapshot.value[k]["name"] == name)
+        {
+          snapshot.value[k]["map"].keys.forEach((j){
+            setState((){
+              map = new EventMap(snapshot.value[k]["map"][j]["url"], new G_LatLng(snapshot.value[k]["map"][j]["lat"], snapshot.value[k]["map"][j]["lng"]), snapshot.value[k]["map"][j]["zoom"], snapshot.value[k]["map"][j]["width"], snapshot.value[k]["map"][j]["height"]);
+            });   
+          }); 
+        }
+      });
+    });
+  }
 
   @override
   initState() {
@@ -28,6 +46,7 @@ class _EventInfoPageState extends State<EventInfoPage> {
         _currentLocation = result;
       });
     }); 
+
   }
 
   @override
@@ -40,7 +59,7 @@ class _EventInfoPageState extends State<EventInfoPage> {
         child: new Column(
           children: <Widget>[
             new Text("Coordinates" + _currentLocation.toString()),
-            new MapsWidget(name: widget.name),
+            new MapsWidget(name: widget.name, map: map),
             new RaisedButton(
               onPressed: () {
                 Navigator.pop(context);

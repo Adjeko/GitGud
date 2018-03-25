@@ -71,7 +71,9 @@ class _MainPageState extends State<MainPage> {
         )
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: (){ mainReference.child("eventinfo").push().set(_events[0].toJson()); },
+        onPressed: (){ 
+          // mainReference.child("eventinfo").push().set(_events[0].toJson()); 
+        },
         tooltip: 'Increment',
         child: new Icon(Icons.favorite_border),
       ),

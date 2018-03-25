@@ -48,11 +48,13 @@ class EventMap {
   String key;
   String url;
   G_LatLng center;
-  double zoomLevel;
-  double mapWidth;
-  double mapHeight;
+  int zoomLevel;
+  int mapWidth;
+  int mapHeight;
 
-  EventMap.fromSnapshot(DataSnapshot snapshot)
+  EventMap(this.url, this.center, this.zoomLevel, this.mapWidth, this.mapHeight);
+
+  EventMap.fromSnapshot(dynamic snapshot)
   : key = snapshot.key,
     url = snapshot.value["url"],
     center = new G_LatLng(snapshot.value["lat"], snapshot.value["lng"]),
