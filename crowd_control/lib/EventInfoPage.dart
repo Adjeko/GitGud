@@ -50,6 +50,12 @@ class _EventInfoPageState extends State<EventInfoPage> {
   }
 
   @override
+  dispose() {
+    _locationSubscription.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
