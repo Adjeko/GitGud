@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'EventInfoPage.dart';
+import 'MapsWidget.dart';
 
 class EventInfo {
   String key;
@@ -41,4 +42,32 @@ class EventInfo {
       "imageUrl" : imageUrl
     };
   } 
+}
+
+class EventMap {
+  String key;
+  String url;
+  G_LatLng center;
+  double zoomLevel;
+  double mapWidth;
+  double mapHeight;
+
+  EventMap.fromSnapshot(DataSnapshot snapshot)
+  : key = snapshot.key,
+    url = snapshot.value["url"],
+    center = new G_LatLng(snapshot.value["lat"], snapshot.value["lng"]),
+    zoomLevel = snapshot.value["zoom"],
+    mapWidth = snapshot.value["width"],
+    mapHeight = snapshot.value["height"];
+
+  toJson() {
+    return {
+    "url" : url,
+    "lat" : center.lat,
+    "lng" : center.lng,
+    "zoom": zoomLevel,
+    "width" : mapWidth,
+    "height": mapHeight
+    };
+  }  
 }
