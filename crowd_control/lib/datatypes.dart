@@ -14,13 +14,31 @@ class EventInfo {
 
   Widget toWidget(BuildContext context){
     return new FlatButton(
+      textTheme: ButtonTextTheme.normal,
+      padding: new EdgeInsets.only(bottom: 5.0),
+
       child: new Card(
         child: new Column( 
           children: <Widget>[
             new Image.network(imageUrl),
-            new Text(name),
-            new Text(description),
-          ]
+            new Text(
+              name,
+              textAlign: TextAlign.left,
+              style: new TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 25.0
+              ),
+            ),
+                 
+            new Text(
+              description,
+              style: new TextStyle(
+                fontSize: 18.0
+              )
+            ),
+          ],
+
+          crossAxisAlignment: CrossAxisAlignment.stretch,
         )
       ),
       onPressed:(){
